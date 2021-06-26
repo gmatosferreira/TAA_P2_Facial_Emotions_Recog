@@ -3,13 +3,17 @@ import os
 import numpy as np
 from PIL import Image, ImageDraw
 
+# To clear
+# rm -r data/train_set/processed/
+
 # Validate arguments
-if len(sys.argv) == 1:
+if len(sys.argv) < 3:
     print("Bad arguments! You must provide the base folder of the dataset.")
-    print(f"Example: $ python {sys.argv[0]} data/train_set")
+    print(f"Example: $ python {sys.argv[0]} data/train_set <numberOfImagesToProcess>")
     exit()
 
 basePath = sys.argv[1]
+processNumber = int(sys.argv[2])
 
 # Validate that folder has structure required 
 if not os.path.exists(os.path.join(basePath, 'images')) or not os.path.exists(os.path.join(basePath, 'annotations')):
@@ -17,12 +21,6 @@ if not os.path.exists(os.path.join(basePath, 'images')) or not os.path.exists(os
     print("\t/images\t\t\tFor images")
     print("\t/annotations\t\tFor numpy files with annotations")
     exit()
-
-# Ask user how many images they want to insert
-processNumber = 0
-while processNumber<1:
-    print("How many images to you want to process?", end=" ")
-    processNumber = int(input())
 
 expressions = ['Neutral', 'Happy', 'Sad', 'Surprise', 'Fear', 'Disgust', 'Anger', 'Contempt']
 
@@ -58,21 +56,64 @@ for f in sorted(os.listdir(basePath + '/images'), key=lambda x:int(x.split('.')[
     # Process image
     img = Image.open(flocation)
 
-    # Draw points on facial landmarks
-    draw = ImageDraw.Draw(img)
-
+    # Crop facial landmarks
+    markerN = 1
+    leftEye = []
+    rightEye = []
+    mouth = []
+    face = []
+    nose = []
     i = 0
     while i<landmarks.size:
-        draw.point((landmarks[i], landmarks[i+1]), fill='yellow')
+        coords = (landmarks[i], landmarks[i+1])
+        # Distinguish different elements
+        # https://www.researchgate.net/figure/The-ibug-68-facial-landmark-points-mark-up_fig9_327500528
+        if markerN<=27: # Face limit
+            face.append(coords)
+        elif markerN<=36: # Nose
+            fill = 'hotpink'
+            nose.append(coords)
+        elif markerN<=42: # Left eye
+            fill = 'red'
+            leftEye.append(coords)
+        elif markerN<=48: # Right eye
+            fill = 'orange'
+            rightEye.append(coords)
+        else: # Until 68, mouth
+            fill = 'purple'
+            mouth.append(coords)
         i += 2
+        markerN += 1
 
-    # Save processed image (create folder if it does not exist)
+    # im.crop((left, top, right, bottom))
+    leftEyeImg = img.crop((min([x[0] for x in leftEye]), min([x[1] for x in leftEye]), max([x[0] for x in leftEye]), max([x[1] for x in leftEye])))
+    rightEyeImg = img.crop((min([x[0] for x in rightEye]), min([x[1] for x in rightEye]), max([x[0] for x in rightEye]), max([x[1] for x in rightEye])))
+    mouthImg = img.crop((min([x[0] for x in mouth]), min([x[1] for x in mouth]), max([x[0] for x in mouth]), max([x[1] for x in mouth])))
+    faceImg = img.crop((min([x[0] for x in face]), min([x[1] for x in face]), max([x[0] for x in face]), max([x[1] for x in face])))
+    noseImg = img.crop((min([x[0] for x in nose]), min([x[1] for x in nose]), max([x[0] for x in nose]), max([x[1] for x in nose])))
+
+    # Save processed images (create folder if it does not exist)
     savedir = os.path.join(basePath, 'processed', expression)
     if not os.path.exists(savedir):
         os.makedirs(savedir)
+    
+    leftEyeImg.save(os.path.join(savedir, fid + '_lefteye.jpg'))
+    rightEyeImg.save(os.path.join(savedir, fid + '_righteye.jpg'))
+    mouthImg.save(os.path.join(savedir, fid + '_mouth.jpg'))
+    faceImg.save(os.path.join(savedir, fid + '_face.jpg'))
+    noseImg.save(os.path.join(savedir, fid + '_noseeye.jpg'))
+
+    # Point facial landmarks
+    i = 0
+    draw = ImageDraw.Draw(img)
+    while i<landmarks.size:
+        draw.point((landmarks[i], landmarks[i+1]), fill='white')
+        i += 2
+
     img.save(os.path.join(savedir, fid + '.jpg'))
 
-    print('\tImage with facial landmarks dotted saved at', os.path.join(savedir, fid + '.jpg'))
+
+    print('\tImage with facial landmarks dotted saved at', os.path.join(savedir, fid + '(_mouth/_nose/_leftEye/_rightEye/_face).jpg'))
 
     if (int(fid) >= processNumber):
         break
