@@ -8,7 +8,7 @@ subsets = {
     'training': {
         'dir': './data/train_set/processed/',
         'start': 0,
-        'samples': 1200,
+        'samples': 2400,
         'folder_crop': './datasets/crop/train',
         'folder_no_crop': './datasets/no_crop/train'
     },
@@ -47,7 +47,7 @@ for emotions in emotionsSet:
         # Foreach emotion
         for e in emotions:
             dir = subsetinfo['dir'] + e + '/'
-            entries = os.listdir(dir)
+            entries = sorted(os.listdir(dir), key=lambda x:int(x.split('.')[0].split('_')[0]))
             cnt = 1
             print(i, e, end="\t\t\t")
 
