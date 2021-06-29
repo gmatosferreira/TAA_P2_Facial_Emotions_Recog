@@ -107,13 +107,14 @@ for f in sorted(os.listdir(basePath + '/images'), key=lambda x:int(x.split('.')[
     faceImg.save(os.path.join(savedir, fid + '_face.jpg'))
     # noseImg.save(os.path.join(savedir, fid + '_noseeye.jpg'))
 
+    """
     # Point facial landmarks
     i = 0
     draw = ImageDraw.Draw(img)
     while i<landmarks.size:
         draw.point((landmarks[i], landmarks[i+1]), fill='white')
         i += 2
-
+    """
     img.save(os.path.join(savedir, fid + '.jpg'))
 
 
