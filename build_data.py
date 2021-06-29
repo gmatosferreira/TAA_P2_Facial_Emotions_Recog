@@ -23,6 +23,10 @@ if not os.path.exists(os.path.join(basePath, 'images')) or not os.path.exists(os
     exit() 
 expressions = ['Neutral', 'Happy', 'Sad', 'Surprise', 'Fear', 'Disgust', 'Anger', 'Contempt']
 
+expCounter = {
+    e: 0 for e in expressions
+}
+
 # For each image (sorted by name)
 for f in sorted(os.listdir(basePath + '/images'), key=lambda x:int(x.split('.')[0])):
     # Validate that is file
@@ -38,6 +42,15 @@ for f in sorted(os.listdir(basePath + '/images'), key=lambda x:int(x.split('.')[
     expression = np.load(os.path.join(basePath + '/annotations', fid + '_exp.npy'))
     expression = expressions[int(expression)]
     print('\tExpression', expression)
+
+    # Break or continue to ignore
+    if all(expCounter[e]>=processNumber for e in expressions):
+        break
+
+    if expCounter[expression]>=processNumber:
+        continue
+
+    expCounter[expression] += 1
 
     # Arousal
     arousal = np.load(os.path.join(basePath + '/annotations', fid + '_aro.npy'))
@@ -119,6 +132,3 @@ for f in sorted(os.listdir(basePath + '/images'), key=lambda x:int(x.split('.')[
 
 
     print('\tImage with facial landmarks dotted saved at', os.path.join(savedir, fid + '(_mouth/_nose/_leftEye/_rightEye/_face).jpg'))
-
-    if (int(fid) >= processNumber):
-        break
