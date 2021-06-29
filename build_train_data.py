@@ -13,24 +13,29 @@ subsets = {
         'folder_no_crop': './datasets/no_crop/train'
     },
     'test': {
-        'dir': './data/train_set/processed/',
-        'start': 1201,
-        'samples': 200,
+        'dir': './data/val_set/processed/',
+        'start': 0,
+        'samples': 400,
         'folder_crop': './datasets/crop/test',
         'folder_no_crop': './datasets/no_crop/test'
     }
 }
 
+emotionsSet = [ ['Neutral', 'Happy', 'Sad', 'Surprise', 'Fear', 'Disgust', 'Anger', 'Contempt']]
+
+
+
 # Create folders if they dont exist
 for s in subsets.values():
     if not os.path.exists(s['folder_crop']):
         os.makedirs(s['folder_crop'])
+        for e in emotionsSet[0]:
+            os.makedirs(s['folder_crop']+'/'+e)
     if not os.path.exists(s['folder_no_crop']):
         os.makedirs(s['folder_no_crop'])
+        for e in emotionsSet[0]:
+            os.makedirs(s['folder_no_crop']+'/'+e)
 
-emotionsSet = [
-    ['Neutral', 'Happy', 'Sad', 'Surprise', 'Fear', 'Disgust', 'Anger', 'Contempt']
-]
 
 # Foreach emotion set
 for emotions in emotionsSet:
