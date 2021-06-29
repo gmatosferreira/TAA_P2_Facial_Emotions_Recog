@@ -112,7 +112,7 @@ for f in sorted(os.listdir(basePath + '/images'), key=lambda x:int(x.split('.')[
         os.makedirs(savedir)
 
     # Resize face imgs
-    faceImg = faceImg.resize((150,150))
+    faceImg = faceImg.resize((48,48))
     
     # leftEyeImg.save(os.path.join(savedir, fid + '_lefteye.jpg'))
     # rightEyeImg.save(os.path.join(savedir, fid + '_righteye.jpg'))
@@ -128,6 +128,8 @@ for f in sorted(os.listdir(basePath + '/images'), key=lambda x:int(x.split('.')[
         draw.point((landmarks[i], landmarks[i+1]), fill='white')
         i += 2
     """
+    # Resize original
+    img = img.resize((48,48))
     img.save(os.path.join(savedir, fid + '.jpg'))
 
 
