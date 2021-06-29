@@ -20,8 +20,7 @@ if not os.path.exists(os.path.join(basePath, 'images')) or not os.path.exists(os
     print("Bad folder! The folder must have the following structure:")
     print("\t/images\t\t\tFor images")
     print("\t/annotations\t\tFor numpy files with annotations")
-    exit()
-
+    exit() 
 expressions = ['Neutral', 'Happy', 'Sad', 'Surprise', 'Fear', 'Disgust', 'Anger', 'Contempt']
 
 # For each image (sorted by name)
@@ -84,24 +83,29 @@ for f in sorted(os.listdir(basePath + '/images'), key=lambda x:int(x.split('.')[
             mouth.append(coords)
         i += 2
         markerN += 1
+    
+    print("\tface", (max(min([x[0] for x in face]), 0), max(0, min([x[1] for x in face])), min(224, max([x[0] for x in face])), min(max([x[1] for x in face]), 224)))
 
     # im.crop((left, top, right, bottom))
     leftEyeImg = img.crop((min([x[0] for x in leftEye]), min([x[1] for x in leftEye]), max([x[0] for x in leftEye]), max([x[1] for x in leftEye])))
     rightEyeImg = img.crop((min([x[0] for x in rightEye]), min([x[1] for x in rightEye]), max([x[0] for x in rightEye]), max([x[1] for x in rightEye])))
     mouthImg = img.crop((min([x[0] for x in mouth]), min([x[1] for x in mouth]), max([x[0] for x in mouth]), max([x[1] for x in mouth])))
-    faceImg = img.crop((min([x[0] for x in face]), min([x[1] for x in face]), max([x[0] for x in face]), max([x[1] for x in face])))
+    faceImg = img.crop((max(min([x[0] for x in face]), 0), max(0, min([x[1] for x in face])), min(224, max([x[0] for x in face])), min(max([x[1] for x in face]), 224)))
     noseImg = img.crop((min([x[0] for x in nose]), min([x[1] for x in nose]), max([x[0] for x in nose]), max([x[1] for x in nose])))
 
     # Save processed images (create folder if it does not exist)
     savedir = os.path.join(basePath, 'processed', expression)
     if not os.path.exists(savedir):
         os.makedirs(savedir)
+
+    # Resize face imgs
+    faceImg = faceImg.resize((150,150))
     
-    leftEyeImg.save(os.path.join(savedir, fid + '_lefteye.jpg'))
-    rightEyeImg.save(os.path.join(savedir, fid + '_righteye.jpg'))
-    mouthImg.save(os.path.join(savedir, fid + '_mouth.jpg'))
+    # leftEyeImg.save(os.path.join(savedir, fid + '_lefteye.jpg'))
+    # rightEyeImg.save(os.path.join(savedir, fid + '_righteye.jpg'))
+    # mouthImg.save(os.path.join(savedir, fid + '_mouth.jpg'))
     faceImg.save(os.path.join(savedir, fid + '_face.jpg'))
-    noseImg.save(os.path.join(savedir, fid + '_noseeye.jpg'))
+    # noseImg.save(os.path.join(savedir, fid + '_noseeye.jpg'))
 
     # Point facial landmarks
     i = 0
