@@ -6,14 +6,14 @@ import cv2 as cv
 
 subsets = {
     'training': {
-        'dir': './datasets/processed/',
+        'dir': './data/train_set/processed/',
         'start': 0,
         'samples': 1200,
         'folder_crop': './datasets/crop/train',
         'folder_no_crop': './datasets/no_crop/train'
     },
     'test': {
-        'dir': './datasets/processed',
+        'dir': './data/train_set/processed/',
         'start': 1201,
         'samples': 200,
         'folder_crop': './datasets/crop/test',
@@ -23,11 +23,13 @@ subsets = {
 
 # Create folders if they dont exist
 for s in subsets.values():
-    if not os.path.exists(s['folder']):
-        os.makedirs(s['folder'])
+    if not os.path.exists(s['folder_crop']):
+        os.makedirs(s['folder_crop'])
+    if not os.path.exists(s['folder_no_crop']):
+        os.makedirs(s['folder_no_crop'])
 
 emotionsSet = [
-    ['neutral', 'happy', 'sad', 'surprise', 'fear', 'disgust', 'anger', 'contempt'],
+    ['Neutral', 'Happy', 'Sad', 'Surprise', 'Fear', 'Disgust', 'Anger', 'Contempt']
 ]
 
 # Foreach emotion set
