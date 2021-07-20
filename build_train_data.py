@@ -21,7 +21,7 @@ subsets = {
     }
 }
 
-emotionsSet = [ ['Neutral', 'Happy', 'Sad', 'Surprise', 'Fear', 'Disgust', 'Anger', 'Contempt']]
+emotionsSet = [['Anger', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise'], ['Fear', 'Anger', 'Surprise','Neutral'], ['Happy', 'Anger', 'Neutral'], ['Fear', 'Anger'], ['Happy', 'Sad'], ['Happy', 'Neutral'], ['Fear', 'Anger', 'Surprise'], ['Fear', 'Sad', 'Happy'] ]
 
 
 
